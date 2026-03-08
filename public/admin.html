@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mock 控制台</title>
+    <link rel="stylesheet" href="/__admin/styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-left"></div>
+    <div class="bg-glow bg-glow-right"></div>
+    <main class="layout">
+      <section class="panel panel-intro">
+        <h1>Mock 控制台</h1>
+        <p>在线管理第三方接口模拟：新增、编辑、删除路由，响应实时生效。</p>
+        <div class="chips">
+          <span class="chip">热更新</span>
+          <span class="chip">可视化 CRUD</span>
+          <span class="chip">JSON 响应体</span>
+        </div>
+      </section>
+
+      <section class="panel panel-form">
+        <h2 id="formTitle">新增 / 覆盖路由</h2>
+        <form id="routeForm">
+          <div class="grid">
+            <label>
+              <span>Method</span>
+              <select id="method" required>
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>PATCH</option>
+                <option>DELETE</option>
+              </select>
+            </label>
+            <label>
+              <span>Path</span>
+              <input id="path" placeholder="/api/example" required />
+            </label>
+            <label>
+              <span>Status</span>
+              <input id="status" type="number" min="100" max="599" value="200" required />
+            </label>
+            <label>
+              <span>Delay (ms)</span>
+              <input id="delayMs" type="number" min="0" value="0" />
+            </label>
+          </div>
+
+          <label>
+            <span>Headers (JSON 对象)</span>
+            <textarea id="headers" rows="4" spellcheck="false">{
+  "Content-Type": "application/json; charset=utf-8"
+}</textarea>
+          </label>
+
+          <label>
+            <span>Body (JSON / 字符串 / 数字)</span>
+            <textarea id="body" rows="8" spellcheck="false">{
+  "message": "hello mock"
+}</textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary">保存路由</button>
+            <button type="button" id="resetBtn" class="btn btn-secondary">清空表单</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel panel-list">
+        <div class="list-head">
+          <h2>当前路由</h2>
+          <button id="refreshBtn" class="btn btn-secondary">刷新</button>
+        </div>
+        <p id="statusBar" class="status">准备就绪</p>
+        <div id="routeList" class="route-list"></div>
+      </section>
+    </main>
+
+    <template id="routeCardTpl">
+      <article class="route-card">
+        <header>
+          <span class="badge method"></span>
+          <code class="route-path"></code>
+          <span class="badge status-code"></span>
+        </header>
+        <p class="meta"></p>
+        <pre class="preview"></pre>
+        <div class="actions">
+          <button class="btn btn-secondary btn-edit">编辑</button>
+          <button class="btn btn-danger btn-delete">删除</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="/__admin/app.js" defer></script>
+  </body>
+  </html>

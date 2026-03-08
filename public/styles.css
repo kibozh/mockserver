@@ -1,0 +1,273 @@
+:root {
+  --bg: #f4efe5;
+  --panel: #fffdf8;
+  --text: #221f1b;
+  --muted: #6b6256;
+  --brand: #0b5d57;
+  --brand-strong: #084843;
+  --danger: #9a3412;
+  --line: #dfd5c4;
+  --shadow: 0 14px 38px rgba(43, 35, 20, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 0% 0%, #ffe0b2 0%, transparent 28%),
+    radial-gradient(circle at 100% 10%, #b2dfdb 0%, transparent 33%),
+    linear-gradient(140deg, #f8f4ec 0%, #f0e8d9 100%);
+  min-height: 100vh;
+}
+
+.bg-glow {
+  position: fixed;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  filter: blur(95px);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.bg-glow-left {
+  top: -120px;
+  left: -90px;
+  background: #ffd54f;
+}
+
+.bg-glow-right {
+  bottom: -120px;
+  right: -120px;
+  background: #26a69a;
+}
+
+.layout {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px;
+  display: grid;
+  gap: 18px;
+}
+
+.panel {
+  background: color-mix(in srgb, var(--panel) 92%, #ffffff 8%);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  animation: rise 0.45s ease both;
+}
+
+.panel-intro h1 {
+  margin: 0;
+  font-size: clamp(26px, 3vw, 40px);
+  letter-spacing: 0.02em;
+}
+
+.panel-intro p {
+  margin: 10px 0 14px;
+  color: var(--muted);
+}
+
+.chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid #c9bea9;
+  background: #fff7e8;
+  color: #5b4b35;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: 21px;
+}
+
+form {
+  display: grid;
+  gap: 12px;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+label {
+  display: grid;
+  gap: 5px;
+}
+
+label span {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #cfc4b1;
+  border-radius: 10px;
+  padding: 10px;
+  font: inherit;
+  background: #fffdfa;
+  color: var(--text);
+}
+
+textarea {
+  resize: vertical;
+  font-family: "Consolas", "Courier New", monospace;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--brand-strong);
+}
+
+.btn-secondary {
+  background: #e9e1d2;
+  color: #40362b;
+}
+
+.btn-secondary:hover {
+  background: #ddd2be;
+}
+
+.btn-danger {
+  background: #fbe8e0;
+  color: var(--danger);
+}
+
+.btn-danger:hover {
+  background: #f6d9cc;
+}
+
+.list-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.status {
+  margin: 8px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.route-list {
+  display: grid;
+  gap: 10px;
+}
+
+.route-card {
+  border: 1px solid #dbcfb8;
+  background: #fffaf1;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.route-card header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-flex;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  border: 1px solid #cfbea2;
+  background: #f8e7c3;
+}
+
+.status-code {
+  background: #d0ece7;
+  border-color: #95d3c8;
+}
+
+.route-path {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.meta {
+  margin: 8px 0;
+  color: #665b4d;
+  font-size: 13px;
+}
+
+.preview {
+  margin: 0 0 10px;
+  background: #fff;
+  border: 1px solid #e2d8c6;
+  border-radius: 10px;
+  padding: 8px;
+  overflow: auto;
+  max-height: 200px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .layout {
+    padding: 12px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
