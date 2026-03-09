@@ -10,7 +10,8 @@
         "name": "Updated Name",
         "vip": false
       },
-      "delayMs": 0
+      "delayMs": 0,
+      "ownerSessionId": ""
     },
     {
       "method": "POST",
@@ -23,7 +24,21 @@
         "orderId": "order_mock_001",
         "status": "created"
       },
-      "delayMs": 300
+      "delayMs": 300,
+      "ownerSessionId": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/test203",
+      "status": 203,
+      "headers": {
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "body": {
+        "message": "hello mock"
+      },
+      "delayMs": 0,
+      "ownerSessionId": "95ffbe44-c2ec-4cc6-a713-511d4710043c"
     }
   ]
 }

@@ -8,6 +8,8 @@ const delayMsEl = document.getElementById("delayMs");
 const headersEl = document.getElementById("headers");
 const bodyEl = document.getElementById("body");
 const refreshBtn = document.getElementById("refreshBtn");
+const searchBtn = document.getElementById("searchBtn");
+const searchKeywordEl = document.getElementById("searchKeyword");
 const resetBtn = document.getElementById("resetBtn");
 const formTitle = document.getElementById("formTitle");
 const routeCardTpl = document.getElementById("routeCardTpl");
@@ -49,8 +51,10 @@ function parseFlexibleInput(raw) {
   }
 }
 
-async function fetchRoutes() {
-  const res = await fetch("/__admin/routes");
+async function fetchRoutes(keyword = "") {
+  const query = keyword.trim();
+  const suffix = query ? `?q=${encodeURIComponent(query)}` : "";
+  const res = await fetch(`/__admin/routes${suffix}`);
   if (!res.ok) {
     throw new Error(`加载路由失败: ${res.status}`);
   }
@@ -119,9 +123,15 @@ function renderRoutes(routes) {
 
 async function refreshRoutes() {
   try {
-    const data = await fetchRoutes();
+    const keyword = searchKeywordEl.value || "";
+    const data = await fetchRoutes(keyword);
     renderRoutes(data.routes || []);
-    setStatus(`已加载 ${data.routes ? data.routes.length : 0} 条路由`);
+    const loadedCount = data.routes ? data.routes.length : 0;
+    if (keyword.trim()) {
+      setStatus(`已加载 ${loadedCount} 条路由（当前会话 + 关键字匹配）`);
+    } else {
+      setStatus(`已加载 ${loadedCount} 条路由（当前会话）`);
+    }
   } catch (err) {
     setStatus(err.message, true);
   }
@@ -159,6 +169,13 @@ routeForm.addEventListener("submit", async (event) => {
 });
 
 refreshBtn.addEventListener("click", refreshRoutes);
+searchBtn.addEventListener("click", refreshRoutes);
+searchKeywordEl.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    refreshRoutes();
+  }
+});
 resetBtn.addEventListener("click", resetForm);
 
 resetForm();

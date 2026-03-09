@@ -185,6 +185,17 @@ textarea {
   align-items: center;
 }
 
+.list-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#searchKeyword {
+  min-width: 260px;
+}
+
 .status {
   margin: 8px 0 12px;
   color: var(--muted);
@@ -258,6 +269,11 @@ textarea {
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  #searchKeyword {
+    min-width: 0;
+    width: 100%;
   }
 }
 

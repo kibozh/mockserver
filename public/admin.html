@@ -72,7 +72,11 @@
       <section class="panel panel-list">
         <div class="list-head">
           <h2>当前路由</h2>
-          <button id="refreshBtn" class="btn btn-secondary">刷新</button>
+          <div class="list-tools">
+            <input id="searchKeyword" placeholder="输入接口名关键字，查看其他会话接口" />
+            <button id="searchBtn" class="btn btn-secondary">搜索</button>
+            <button id="refreshBtn" class="btn btn-secondary">刷新</button>
+          </div>
         </div>
         <p id="statusBar" class="status">准备就绪</p>
         <div id="routeList" class="route-list"></div>

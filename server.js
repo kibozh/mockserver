@@ -1,11 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 const http = require("http");
+const crypto = require("crypto");
 const { URL } = require("url");
 
 const PORT = Number(process.env.PORT || 3000);
 const CONFIG_PATH = path.join(__dirname, "mocks.json");
 const PUBLIC_DIR = path.join(__dirname, "public");
+const ADMIN_SESSION_COOKIE = "mock_admin_session";
 
 let config = { routes: [] };
 
@@ -43,7 +45,8 @@ function loadConfig() {
       status: Number(route.status || 200),
       headers: route.headers && typeof route.headers === "object" ? route.headers : {},
       body: route.body === undefined ? null : route.body,
-      delayMs: Number(route.delayMs || 0)
+      delayMs: Number(route.delayMs || 0),
+      ownerSessionId: typeof route.ownerSessionId === "string" ? route.ownerSessionId : ""
     }))
   };
   console.log(`[mock-server] loaded ${config.routes.length} route(s).`);
@@ -117,9 +120,58 @@ function saveConfig() {
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), "utf-8");
 }
 
-async function handleAdminApi(req, res, pathname) {
+function parseCookies(cookieHeader) {
+  const pairs = String(cookieHeader || "").split(";");
+  const cookies = {};
+
+  for (const pair of pairs) {
+    const index = pair.indexOf("=");
+    if (index <= 0) {
+      continue;
+    }
+    const key = pair.slice(0, index).trim();
+    const value = pair.slice(index + 1).trim();
+    cookies[key] = value;
+  }
+
+  return cookies;
+}
+
+function ensureAdminSession(req, res) {
+  const cookies = parseCookies(req.headers.cookie);
+  const existing = cookies[ADMIN_SESSION_COOKIE];
+  if (existing) {
+    return existing;
+  }
+
+  const sessionId = crypto.randomUUID();
+  res.setHeader("Set-Cookie", `${ADMIN_SESSION_COOKIE}=${sessionId}; Path=/; HttpOnly; SameSite=Lax`);
+  return sessionId;
+}
+
+async function handleAdminApi(req, res, pathname, url) {
+  const sessionId = ensureAdminSession(req, res);
+
   if (req.method === "GET" && pathname === "/__admin/routes") {
-    sendJson(res, 200, config);
+    const keyword = String(url.searchParams.get("q") || "").trim().toLowerCase();
+    const routes = config.routes.filter((route) => {
+      if (route.ownerSessionId === sessionId) {
+        return true;
+      }
+
+      if (!keyword) {
+        return false;
+      }
+
+      return route.path.toLowerCase().includes(keyword);
+    });
+
+    sendJson(res, 200, {
+      routes,
+      keyword,
+      ownCount: routes.filter((route) => route.ownerSessionId === sessionId).length,
+      totalCount: config.routes.length
+    });
     return true;
   }
 
@@ -139,13 +191,15 @@ async function handleAdminApi(req, res, pathname) {
       }
 
       const idx = config.routes.findIndex((r) => r.method === method && r.path === routePath);
+      const existingRoute = idx >= 0 ? config.routes[idx] : null;
       const nextRoute = {
         method,
         path: routePath,
         status: Number(data.status || 200),
         headers: data.headers && typeof data.headers === "object" ? data.headers : {},
         body: data.body === undefined ? null : data.body,
-        delayMs: Number(data.delayMs || 0)
+        delayMs: Number(data.delayMs || 0),
+        ownerSessionId: existingRoute && existingRoute.ownerSessionId ? existingRoute.ownerSessionId : sessionId
       };
 
       if (idx >= 0) {
@@ -236,7 +290,7 @@ async function requestHandler(req, res) {
     return;
   }
 
-  const adminHandled = await handleAdminApi(req, res, pathname);
+  const adminHandled = await handleAdminApi(req, res, pathname, url);
   if (adminHandled) {
     return;
   }
